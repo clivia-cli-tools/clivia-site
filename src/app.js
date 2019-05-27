@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
+const sass = require('node-sass');
 
 const app = express();
 const port = 3001;
@@ -11,6 +12,19 @@ hbs.registerPartials(path.join(__dirname, '../views/partials'));
 
 // Using the handlebars view engine through hbs
 app.set('view engine', 'hbs');
+
+// Use sass middleware for preprocessing
+const sassRender = (req, res, next) => {
+
+  sassMiddleware({
+    src: __dirname + '/sass/main.scss',
+    dest: __dirname + '/public',
+    debug: true,
+  })
+  next();
+}
+
+app.use(sassRender);
 
 app.get('', (req, res) => {
   // Renders the hbs file in the views dir to html
